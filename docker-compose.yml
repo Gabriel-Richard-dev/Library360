@@ -13,12 +13,20 @@ services:
     depends_on:
       - autor-db
     network_mode: bridge
-
   livro-db:
     image: postgres:latest
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_DB: livrodb
+      POSTGRES_USER: livro
+      POSTGRES_PASSWORD: livro
+
   autor-db:
     image: postgres:latest
     ports:
       - "5432:5433"
+    environment:
+      POSTGRES_DB: autordb
+      POSTGRES_USER: autor
+      POSTGRES_PASSWORD: autor
