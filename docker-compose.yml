@@ -6,13 +6,11 @@ services:
       context: livro-ms/.
     depends_on:
       - livro-db
-    network_mode: bridge
   autor:
     build:
       context: autor-ms/.
     depends_on:
       - autor-db
-    network_mode: bridge
   livro-db:
     image: postgres:latest
     ports:
@@ -25,7 +23,7 @@ services:
   autor-db:
     image: postgres:latest
     ports:
-      - "5432:5433"
+      - "5433:5432"
     environment:
       POSTGRES_DB: autordb
       POSTGRES_USER: autor

@@ -1,8 +1,8 @@
 package library360.livroms.service;
 
-import com.shardbiils.model.BaseEntity;
-import com.shardbiils.repository.BaseRepository;
 import jakarta.transaction.Transactional;
+import library360.livroms.model.BaseEntity;
+import library360.livroms.repository.BaseRepository;
 
 public class BaseService<entity extends BaseEntity, T extends Number> {
     private BaseRepository<entity, T> repository;
