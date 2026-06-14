@@ -2,16 +2,19 @@ version: "3.9"
 
 services:
   livro:
+    container_name: livro-ms
     build:
       context: livro-ms/.
     depends_on:
       - livro-db
   autor:
+    container_name: autor-ms
     build:
       context: autor-ms/.
     depends_on:
       - autor-db
   livro-db:
+    container_name: livro-db
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -19,8 +22,14 @@ services:
       POSTGRES_DB: livrodb
       POSTGRES_USER: livro
       POSTGRES_PASSWORD: livro
+    healthcheck:
+      test: pg_isready -U livro -d livrodb
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   autor-db:
+    container_name: autor-db
     image: postgres:latest
     ports:
       - "5433:5432"
@@ -28,3 +37,19 @@ services:
       POSTGRES_DB: autordb
       POSTGRES_USER: autor
       POSTGRES_PASSWORD: autor
+    healthcheck:
+      test: pg_isready -U autor -d autordb
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - autor
+      - livro
+
