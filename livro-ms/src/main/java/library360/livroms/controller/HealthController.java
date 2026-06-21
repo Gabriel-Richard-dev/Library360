@@ -13,6 +13,6 @@ public class HealthController {
 
     @GetMapping
     public ResponseEntity<String> getHealth(){
-        return ResponseEntity.ok().body("[Livro]: Application online! Hehe");
+        return ResponseEntity.ok().body("[Autor]: Application online! Hehe");
     }
 }
