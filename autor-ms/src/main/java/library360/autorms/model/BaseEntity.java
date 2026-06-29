@@ -29,23 +29,15 @@ public abstract class BaseEntity<I extends Number> implements Serializable {
     @Column(name="updated_at", nullable = false, updatable = true)
     private LocalDateTime updatedAt;
 
-
     @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseEntity<?> that = (BaseEntity<?>) o;
+        return Objects.equals(id, that.id) && Objects.equals(createdAt, that.createdAt) && Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        BaseEntity<I> that = (BaseEntity<I>) o;
-
-        return Objects.equals(id, that.id);
+    public int hashCode() {
+        return Objects.hash(id, createdAt, updatedAt);
     }
 }
