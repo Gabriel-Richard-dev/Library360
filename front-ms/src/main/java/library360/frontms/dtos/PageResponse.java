@@ -9,8 +9,6 @@ public class PageResponse<T> {
     private int number;
     private int totalPages;
     private long totalElements;
-    private boolean first;
-    private boolean last;
 
     public PageResponse() {
     }
@@ -45,21 +43,5 @@ public class PageResponse<T> {
 
     public void setTotalElements(long totalElements) {
         this.totalElements = totalElements;
-    }
-
-    public boolean isFirst() {
-        return first;
-    }
-
-    public void setFirst(boolean first) {
-        this.first = first;
-    }
-
-    public boolean isLast() {
-        return last;
-    }
-
-    public void setLast(boolean last) {
-        this.last = last;
     }
 }

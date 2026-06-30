@@ -44,7 +44,7 @@ select {
     margin-bottom: 28px;
 }
 
-.eyebrow {
+.catalog-brand {
     color: var(--primary);
     font-size: .78rem;
     font-weight: 800;

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,10 +7,10 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
 </head>
 <body>
-<main class="container">
-    <header class="page-header">
+<div class="container">
+    <div class="page-header">
         <div>
-            <span class="eyebrow">Library360</span>
+            <span class="catalog-brand">Library360</span>
             <h1>Catálogo de liros</h1>
             <p>Consulte os livros e seus autores cadastrados nos microserviços.</p>
         </div>
@@ -19,7 +19,7 @@
             <button type="button" class="button secondary" data-dialog-open="autor-dialog">Novo autor</button>
             <button type="button" class="button primary" data-dialog-open="livro-dialog">Novo livro</button>
         </div>
-    </header>
+    </div>
 
     <div class="alert success-alert" role="status" th:if="${sucesso}" th:text="${sucesso}">
         Cadastro realizado com sucesso.
@@ -261,7 +261,7 @@
         </div>
     </dialog>
 
-    <section class="card filters" aria-labelledby="filter-title">
+    <div class="card filters" aria-labelledby="filter-title">
         <div class="section-heading">
             <div>
                 <h2 id="filter-title">Filtros</h2>
@@ -302,13 +302,13 @@
 
             <button type="submit">Buscar livros</button>
         </form>
-    </section>
+    </div>
 
     <div class="alert" role="alert" th:if="${erro}" th:text="${erro}">
         Não foi possível consultar os microserviços.
     </div>
 
-    <section id="catalogo" class="card catalog" aria-labelledby="catalog-title">
+    <div id="catalogo" class="card catalog" aria-labelledby="catalog-title">
         <div class="section-heading">
             <div>
                 <h2 id="catalog-title">Livros</h2>
@@ -384,21 +384,21 @@
             <p>Tente alterar os filtros ou cadastre livros no microserviço.</p>
         </div>
 
-        <nav class="pagination" aria-label="Paginação" th:if="${pagina.totalPages > 1}">
+        <div class="pagination" aria-label="Paginação" th:if="${pagina.totalPages > 1}">
             <a
-                    th:if="${!pagina.first}"
+                    th:if="${pagina.number > 0}"
                     th:href="@{/(titulo=${titulo},genero=${genero},anoPublicacao=${anoPublicacao},autorId=${autorId},page=${pagina.number - 1})}">
                 Anterior
             </a>
             <span th:text="|Página ${pagina.number + 1} de ${pagina.totalPages}|">Página 1 de 1</span>
             <a
-                    th:if="${!pagina.last}"
+                    th:if="${pagina.number + 1 < pagina.totalPages}"
                     th:href="@{/(titulo=${titulo},genero=${genero},anoPublicacao=${anoPublicacao},autorId=${autorId},page=${pagina.number + 1})}">
                 Próxima
             </a>
-        </nav>
-    </section>
-</main>
+        </div>
+    </div>
+</div>
 <script th:src="@{/js/app.js}" src="/js/app.js"></script>
 </body>
 </html>

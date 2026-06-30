@@ -52,7 +52,7 @@ public class HomeController {
             model.addAttribute("pagina", new PageResponse<>());
             model.addAttribute(
                     "erro",
-                    "Não foi possível consultar os microserviços. Verifique se livro-ms e autor-ms estão ativos.");
+                    "Não foi possivel encntrar, tente novamente mais tarde.");
         }
 
         return "home";

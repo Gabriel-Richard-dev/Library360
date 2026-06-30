@@ -43,7 +43,8 @@ public class CatalogoService {
             int size) {
         UriComponentsBuilder uri = UriComponentsBuilder
                 .fromPath("/livro/search")
-                .queryParam("page", Math.max(page, 0))
+                .queryParam("page", page
+                )
                 .queryParam("size", size)
                 .queryParam("titulo", normalizarTexto(titulo))
                 .queryParam("genero", normalizarTexto(genero));
