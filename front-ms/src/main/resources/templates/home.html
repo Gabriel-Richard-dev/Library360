@@ -3,11 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <title>Library360 | Catálogo</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
 </head>
 <body>
-    <h1>Livros</h1>
-    <span>Titulo</span>
-    <div th:text="${titulo}">TItulo:</div>
+<div class="container">
+    <div class="page-header">
+        <div>
+            <span class="catalog-brand">Library360</span>
+            <h1>Catálogo de liros</h1>
+            <p>Consulte os livros e seus autores cadastrados nos microserviços.</p>
+        </div>
+        <div class="header-actions">
+            <button type="button" class="button ghost" data-dialog-open="autores-dialog">Autores</button>
+            <button type="button" class="button secondary" data-dialog-open="autor-dialog">Novo autor</button>
+            <button type="button" class="button primary" data-dialog-open="livro-dialog">Novo livro</button>
+        </div>
+    </div>
+
+    <div class="alert success-alert" role="status" th:if="${sucesso}" th:text="${sucesso}">
+        Cadastro realizado com sucesso.
+    </div>
+
+    <div class="alert" role="alert" th:if="${erroCadastro}" th:text="${erroCadastro}">
+        Não foi possível realizar o cadastro.
+    </div>
+
+    <dialog id="autor-dialog" class="modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-eyebrow">Novo cadastro</span>
+                    <h2>Cadastrar autor</h2>
+                    <p>Adicione um autor ao catálogo da biblioteca.</p>
+                </div>
+                <button type="button" class="close-button" data-dialog-close aria-label="Fechar">&times;</button>
+            </div>
+
+            <form method="post" th:action="@{/autores}" class="modal-form">
+                <label>
+                    Nome
+                    <input type="text" name="nome" maxlength="100" required placeholder="Ex.: Machado de Assis">
+                </label>
+
+                <div class="two-columns">
+                    <label>
+                        Nacionalidade
+                        <input type="text" name="nacionalidade" maxlength="80" required placeholder="Ex.: Brasileira">
+                    </label>
+
+                    <label>
+                        Ano de nascimento
+                        <input type="number" name="anoNascimento" min="1" required placeholder="Ex.: 1839">
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="button ghost" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="button primary">Cadastrar autor</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog id="autores-dialog" class="modal modal-wide">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-eyebrow">Gerenciamento</span>
+                    <h2>Autores</h2>
+                    <p>Edite os dados ou remova autores sem livros vinculados.</p>
+                </div>
+                <button type="button" class="close-button" data-dialog-close aria-label="Fechar">&times;</button>
+            </div>
+
+            <div class="management-empty" th:if="${autores.isEmpty()}">
+                Nenhum autor cadastrado.
+            </div>
+
+            <div class="management-list" th:if="${!autores.isEmpty()}">
+                <div class="management-row" th:each="autor : ${autores}">
+                    <div>
+                        <strong th:text="${autor.nome}">Machado de Assis</strong>
+                        <span th:text="|${autor.nacionalidade} · ${autor.anoNascimento}|">Brasileira · 1839</span>
+                    </div>
+                    <div class="row-actions">
+                        <button
+                                type="button"
+                                class="icon-action edit"
+                                aria-label="Editar autor"
+                                title="Editar autor"
+                                data-dialog-open="editar-autor-dialog"
+                                data-edit-author
+                                th:attr="data-id=${autor.id},data-nome=${autor.nome},data-nacionalidade=${autor.nacionalidade},data-ano=${autor.anoNascimento}">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+                            </svg>
+                        </button>
+                        <form
+                                method="post"
+                                th:action="@{/autores/{id}/excluir(id=${autor.id})}"
+                                data-confirm="Excluir este autor? Esta ação não pode ser desfeita.">
+                            <button type="submit" class="icon-action delete" aria-label="Excluir autor" title="Excluir autor">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M3 6h18"/>
+                                    <path d="M8 6V4h8v2"/>
+                                    <path d="M19 6l-1 14H6L5 6"/>
+                                    <path d="M10 11v5M14 11v5"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="editar-autor-dialog" class="modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-eyebrow">Edição</span>
+                    <h2>Editar autor</h2>
+                    <p>Atualize os dados do autor selecionado.</p>
+                </div>
+                <button type="button" class="close-button" data-dialog-close aria-label="Fechar">&times;</button>
+            </div>
+
+            <form method="post" th:action="@{/autores/editar}" class="modal-form" id="editar-autor-form">
+                <input type="hidden" name="id">
+                <label>
+                    Nome
+                    <input type="text" name="nome" maxlength="100" required>
+                </label>
+                <div class="two-columns">
+                    <label>
+                        Nacionalidade
+                        <input type="text" name="nacionalidade" maxlength="80" required>
+                    </label>
+                    <label>
+                        Ano de nascimento
+                        <input type="number" name="anoNascimento" min="1" required>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="button ghost" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="button primary">Salvar alterações</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog id="livro-dialog" class="modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-eyebrow">Novo cadastro</span>
+                    <h2>Cadastrar livro</h2>
+                    <p>Informe os dados bibliográficos do exemplar.</p>
+                </div>
+                <button type="button" class="close-button" data-dialog-close aria-label="Fechar">&times;</button>
+            </div>
+
+            <form method="post" th:action="@{/livros}" class="modal-form">
+                <label>
+                    Título
+                    <input type="text" name="titulo" maxlength="150" required placeholder="Ex.: Dom Casmurro">
+                </label>
+
+                <div class="two-columns">
+                    <label>
+                        Gênero
+                        <input type="text" name="genero" maxlength="60" required placeholder="Ex.: Romance">
+                    </label>
+
+                    <label>
+                        Ano de publicação
+                        <input type="number" name="anoPublicacao" min="1" required placeholder="Ex.: 1899">
+                    </label>
+                </div>
+
+                <label>
+                    Autor
+                    <select name="autorId" required th:disabled="${autores.isEmpty()}">
+                        <option value="" selected disabled>Selecione um autor</option>
+                        <option
+                                th:each="autor : ${autores}"
+                                th:value="${autor.id}"
+                                th:text="${autor.nome}">
+                            Machado de Assis
+                        </option>
+                    </select>
+                </label>
+
+                <label class="checkbox-label">
+                    <input type="checkbox" name="disponivel" value="true" checked>
+                    Não emprestado
+                </label>
+
+                <p class="form-hint" th:if="${autores.isEmpty()}">Cadastre ao menos um autor para habilitar este formulário.</p>
+                <div class="modal-footer">
+                    <button type="button" class="button ghost" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="button primary" th:disabled="${autores.isEmpty()}">Cadastrar livro</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog id="editar-livro-dialog" class="modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-eyebrow">Edição</span>
+                    <h2>Editar livro</h2>
+                    <p>Atualize os dados do livro selecionado.</p>
+                </div>
+                <button type="button" class="close-button" data-dialog-close aria-label="Fechar">&times;</button>
+            </div>
+
+            <form method="post" th:action="@{/livros/editar}" class="modal-form" id="editar-livro-form">
+                <input type="hidden" name="id">
+                <label>
+                    Título
+                    <input type="text" name="titulo" maxlength="150" required>
+                </label>
+                <div class="two-columns">
+                    <label>
+                        Gênero
+                        <input type="text" name="genero" maxlength="60" required>
+                    </label>
+                    <label>
+                        Ano de publicação
+                        <input type="number" name="anoPublicacao" min="1" required>
+                    </label>
+                </div>
+                <label>
+                    Autor
+                    <select name="autorId" required>
+                        <option
+                                th:each="autor : ${autores}"
+                                th:value="${autor.id}"
+                                th:text="${autor.nome}">
+                            Machado de Assis
+                        </option>
+                    </select>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="disponivel" value="true">
+                    Não emprestado
+                </label>
+                <div class="modal-footer">
+                    <button type="button" class="button ghost" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="button primary">Salvar alterações</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <div class="card filters" aria-labelledby="filter-title">
+        <div class="section-heading">
+            <div>
+                <h2 id="filter-title">Filtros</h2>
+                <p>Preencha um ou mais campos para refinar a busca.</p>
+            </div>
+            <a class="clear-link" th:href="@{/}">Limpar filtros</a>
+        </div>
+
+        <form method="get" th:action="@{/}" class="filter-grid">
+            <label>
+                Título
+                <input type="search" name="titulo" th:value="${titulo}" placeholder="Ex.: Dom Casmurro">
+            </label>
+
+            <label>
+                Gênero
+                <input type="search" name="genero" th:value="${genero}" placeholder="Ex.: Romance">
+            </label>
+
+            <label>
+                Ano de publicação
+                <input type="number" name="anoPublicacao" th:value="${anoPublicacao}" min="1" placeholder="Ex.: 1899">
+            </label>
+
+            <label>
+                Autor
+                <select name="autorId">
+                    <option value="">Todos os autores</option>
+                    <option
+                            th:each="autor : ${autores}"
+                            th:value="${autor.id}"
+                            th:text="${autor.nome}"
+                            th:selected="${autorId != null and autorId == autor.id}">
+                        Machado de Assis
+                    </option>
+                </select>
+            </label>
+
+            <button type="submit">Buscar livros</button>
+        </form>
+    </div>
+
+    <div class="alert" role="alert" th:if="${erro}" th:text="${erro}">
+        Não foi possível consultar os microserviços.
+    </div>
+
+    <div id="catalogo" class="card catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
+            <div>
+                <h2 id="catalog-title">Livros</h2>
+                <p th:text="${pagina.totalElements == 1 ? '1 livro encontrado' : pagina.totalElements + ' livros encontrados'}">
+                    0 livros encontrados
+                </p>
+            </div>
+        </div>
+
+        <div class="table-wrap" th:if="${!livros.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">Título</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Gênero</th>
+                    <th scope="col">Publicação</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="actions-heading">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${livros}">
+                    <td class="book-title" th:text="${item.livro.titulo}">Dom Casmurro</td>
+                    <td th:text="${item.autorNome}">Machado de Assis</td>
+                    <td th:text="${item.livro.genero}">Romance</td>
+                    <td th:text="${item.livro.anoPublicacao}">1899</td>
+                    <td>
+                        <span
+                                class="status"
+                                th:classappend="${item.livro.disponivel} ? ' available' : ' unavailable'"
+                                th:text="${item.livro.disponivel} ? 'Disponível' : 'Indisponível'">
+                            Disponível
+                        </span>
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <button
+                                    type="button"
+                                    class="icon-action edit"
+                                    aria-label="Editar livro"
+                                    title="Editar livro"
+                                    data-dialog-open="editar-livro-dialog"
+                                    data-edit-book
+                                    th:attr="data-id=${item.livro.id},data-titulo=${item.livro.titulo},data-genero=${item.livro.genero},data-ano=${item.livro.anoPublicacao},data-autor-id=${item.livro.autorId},data-disponivel=${item.livro.disponivel}">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 20h9"/>
+                                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+                                </svg>
+                            </button>
+                            <form
+                                    method="post"
+                                    th:action="@{/livros/{id}/excluir(id=${item.livro.id})}"
+                                    data-confirm="Excluir este livro? Esta ação não pode ser desfeita.">
+                                <button type="submit" class="icon-action delete" aria-label="Excluir livro" title="Excluir livro">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 6h18"/>
+                                        <path d="M8 6V4h8v2"/>
+                                        <path d="M19 6l-1 14H6L5 6"/>
+                                        <path d="M10 11v5M14 11v5"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" th:if="${livros.isEmpty() and erro == null}">
+            <h3>Nenhum livro encontrado</h3>
+            <p>Tente alterar os filtros ou cadastre livros no microserviço.</p>
+        </div>
+
+        <div class="pagination" aria-label="Paginação" th:if="${pagina.totalPages > 1}">
+            <a
+                    th:if="${pagina.number > 0}"
+                    th:href="@{/(titulo=${titulo},genero=${genero},anoPublicacao=${anoPublicacao},autorId=${autorId},page=${pagina.number - 1})}">
+                Anterior
+            </a>
+            <span th:text="|Página ${pagina.number + 1} de ${pagina.totalPages}|">Página 1 de 1</span>
+            <a
+                    th:if="${pagina.number + 1 < pagina.totalPages}"
+                    th:href="@{/(titulo=${titulo},genero=${genero},anoPublicacao=${anoPublicacao},autorId=${autorId},page=${pagina.number + 1})}">
+                Próxima
+            </a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/app.js}" src="/js/app.js"></script>
 </body>
 </html>
