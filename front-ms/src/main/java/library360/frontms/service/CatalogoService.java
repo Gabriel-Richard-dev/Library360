@@ -42,7 +42,7 @@ public class CatalogoService {
             int page,
             int size) {
         UriComponentsBuilder uri = UriComponentsBuilder
-                .fromPath("/livro/search")
+                .fromPath("/search")
                 .queryParam("page", page
                 )
                 .queryParam("size", size)
@@ -62,7 +62,7 @@ public class CatalogoService {
 
     public List<AutorDto> buscarAutores() {
         String uri = UriComponentsBuilder
-                .fromPath("/autor/search")
+                .fromPath("/search")
                 .queryParam("page", 0)
                 .queryParam("size", 500)
                 .queryParam("nome", "")
@@ -81,7 +81,7 @@ public class CatalogoService {
 
     public void cadastrarAutor(AutorDto autor) {
         autorClient.post()
-                .uri("/autor")
+                .uri("/")
                 .body(autor)
                 .retrieve()
                 .toBodilessEntity();
@@ -89,7 +89,7 @@ public class CatalogoService {
 
     public void cadastrarLivro(LivroDto livro) {
         livroClient.post()
-                .uri("/livro")
+                .uri("/")
                 .body(livro)
                 .retrieve()
                 .toBodilessEntity();
@@ -105,14 +105,14 @@ public class CatalogoService {
 
     public void excluirAutor(Long id) {
         autorClient.delete()
-                .uri("/autor/{id}", id)
+                .uri("/{id}", id)
                 .retrieve()
                 .toBodilessEntity();
     }
 
     public void excluirLivro(Long id) {
         livroClient.delete()
-                .uri("/livro/{id}", id)
+                .uri("/{id}", id)
                 .retrieve()
                 .toBodilessEntity();
     }

@@ -16,7 +16,6 @@ import static org.springframework.http.ResponseEntity.*;
 
 @RestController
 @RequestScope
-@RequestMapping(value = "livro")
 public class LivroController {
 
     @Autowired
